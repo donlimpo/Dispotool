@@ -27,7 +27,7 @@ public class DispoMain {
 	                Inhalt.add(line);
 	                System.out.println("Kante [von= " + Kante[0] + " => Nach=" + Kante[1] + "] Dauer: "+ Kante[4]);
 	                System.out.println(Kante[1].toString());
-	                Arrays.deepToString(Basisdaten);
+	               
 	                Basisdaten.add(Kante);
 
 	            }
