@@ -39,7 +39,7 @@ public class TestDijkstraAlgorithm {
         // Lets check from location Loc_1 to Loc_10
         Graph graph = new Graph(nodes, edges);
         DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
-        dijkstra.execute(nodes.get(0));
+        dijkstra.execute(nodes.get(0)); //hier steht der Startknoten
         LinkedList<Vertex> path = dijkstra.getPath(nodes.get(10));
 
  //       assertNotNull(path);
