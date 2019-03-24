@@ -12,7 +12,9 @@ import algos.dijkstra.model.Edge;
 import algos.dijkstra.model.Graph;
 import algos.dijkstra.model.Vertex;
 
-
+/*
+ * Quelle: https://www.vogella.com/tutorials/JavaAlgorithmsDijkstra/article.html
+ */
 public class DijkstraAlgorithm {
 
     private final List<Vertex> nodes;

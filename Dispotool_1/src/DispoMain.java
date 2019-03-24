@@ -75,7 +75,14 @@ sortedGroupingBy(Function<T, K> function) {
 	                }
 	               /* Achtung: die erste Zeile enthält einen Namenud kann daher einen Fehler werfen.
 	                */
-	                Verbindung.add(TempKante);
+	                
+	                /*
+	                 * hier baue ich noch rein, das das Ausland erstmal nicht berücksichtigt wird.
+	                 */
+	                char Tester = "X".charAt(0);
+	                if((Kante[0].charAt(0) != Tester) & (Kante[1].charAt(0) != Tester)) {
+	                	Verbindung.add(TempKante);
+	                }
 	                
                 }
                 iZaehler++;
@@ -145,7 +152,7 @@ sortedGroupingBy(Function<T, K> function) {
 		    	   //System.out.println(TempEdge);
 	    	   }
 	    	  catch (NullPointerException e) {
-	    		  System.out.println("Hier wäre etwas schiefgegangen!");
+	    		 // System.out.println("Hier wäre etwas schiefgegangen!");
 	    	  }
 	   });
 	       System.out.println("Wir haben erfolgreich die Kanten befüllt");
@@ -162,14 +169,10 @@ sortedGroupingBy(Function<T, K> function) {
     			   .filter(Bahnhof -> "TS".equals(Bahnhof.getId()))
     			   .findAny()
     			   .orElse(null);
-	       
-	       
-	       // Lets check from location Loc_1 to Loc_10
 	        Graph graph = new Graph(Bhfs, Connect);
+
 	        DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
-	        //dijkstra.execute(Bhfs.get(50)); // von hier geht es losh);
 	        dijkstra.execute(TempVonVertex); // von hier geht es los
-	        //LinkedList<Vertex> path = dijkstra.getPath(Bhfs.get(150));  // und hier steht der Zielknoten drin
 	        LinkedList<Vertex> path = dijkstra.getPath(TempNach);  // und hier steht der Zielknoten drin
 
 	 //       assertNotNull(path);
@@ -182,11 +185,21 @@ sortedGroupingBy(Function<T, K> function) {
 	        /*
 	         * Jetzt als nächstes nochmal reingehen und die Dauer rausholen und zusätzlich angeben.
 	         */
-	        Iterator it = path.iterator();
-	        int k=0;
-	        while(it.hasNext()) {
-	        	System.out.println(""+path.get(k));
-	        	k++;
+	        System.out.println(path);
+	        
+	         int k=0 ;
+	         int iRunSum =0;
+	        for (k=0; k< path.size()-1; k++) {
+	        	Vertex tempAktuellVonVertex = path.get(k);
+	        	Vertex tempAktuellNachVertex = path.get(k+1);
+	        	 Edge TempKante = Connect.stream()
+	        			 .filter(Ausgang -> tempAktuellVonVertex.equals(Ausgang.getSource()))
+	        			 .filter(Ausgang -> tempAktuellNachVertex.equals(Ausgang.getDestination()))
+		    			 .findAny()
+		    			  .orElse(null);
+	        	 iRunSum = iRunSum+ TempKante.getWeight();	        	
+	        	System.out.println("Von: "+ path.get(k) + " Nach: "+ path.get(k+1) + " Dauer: "+ TempKante.getWeight() + " Runsum: "+iRunSum);
+	        
 	        }
 	        
 	       
