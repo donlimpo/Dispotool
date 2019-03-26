@@ -1,9 +1,22 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import algos.dijkstra.model.Edge;
 import algos.dijkstra.model.Vertex;
 
 public class Standorte {
+	final private ArrayList<Vertex> standorteVertexs;
+	
+	
+	public Standorte(ArrayList<Vertex> standorteVertexs) {
+		this.standorteVertexs = standorteVertexs;
+		
+	}
+	
+	public ArrayList<Vertex> getStandorte() {
+		return standorteVertexs;
+		
+	}
 
 
 public static List<Vertex> BereitschaftenFuellen(ArrayList<Vertex> AlleStandorte) {
