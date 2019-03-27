@@ -40,8 +40,12 @@ public static <T, K extends Comparable<K>> Collector<T, ?, TreeMap<K, List<T>>> 
      return Collectors.groupingBy(function, 
         TreeMap::new, Collectors.toList());
 }
-public static void PfadFindenStrings(String vonString, String nachString) {
+public static ArrayList<Wege> PfadFindenStrings(String vonString, String nachString) {
+	if (vonString.equals(nachString)) {
+		return null;
+	}
     
+	ArrayList<Wege> tempReiseWeg = new ArrayList<Wege>();
     // wir fahren mal von MH nach TS
     Vertex TempVonVertex = bhfVertex.stream()
 			   .filter(Bahnhof -> vonString.equals(Bahnhof.getId()))
@@ -83,8 +87,21 @@ public static void PfadFindenStrings(String vonString, String nachString) {
 	    			  .orElse(null);
      	 iRunSum = iRunSum+ TempKante.getWeight();	        	
      	System.out.println("Von: "+ path.get(k) + " Nach: "+ path.get(k+1) + " Dauer: "+ TempKante.getWeight() + " Runsum: "+iRunSum);
-     }      
 
+     	Wege tempWeg = new Wege(vonString + "-" + nachString, 
+     			path.get(k),
+     			path.get(k+1),
+     			0,
+     			0,
+     			TempKante.getWeight(),
+     			iRunSum
+     			);
+     	tempWeg.vonVertex= path.get(k);
+     	
+     	
+     	tempReiseWeg.add(tempWeg);
+     }      
+return tempReiseWeg;
 	
 }
 
@@ -242,11 +259,19 @@ public static void main(String[] args) {
         }      
 
         System.out.println(Standorte.BereitschaftenFuellen(bhfVertex));  
+        List<Vertex> StandortListe = Standorte.BereitschaftenFuellen(bhfVertex);
+        
         PfadFindenStrings("MH", "HH");
+        
+        ArrayList<Wege> Anfahrten = new ArrayList<Wege>();
+        
+        for (Vertex Abgangsort : StandortListe ) {
+        	System.out.println(Abgangsort.getName());
+        	if(Abgangsort.getName() != "MH") {
+        		Anfahrten.addAll(PfadFindenStrings(Abgangsort.getName(), "KK"));
+        	}
+        }
 	}
-
-
-
 
 }
 

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Date;
 
 import algos.dijkstra.model.Edge;
 import algos.dijkstra.model.Vertex;
@@ -11,28 +12,34 @@ public class Wege {
 	 * 2) Auf dem Zug
 	 * 3) Vom Zug zurück zum Standort
 	 */
-	final private String idString;
-	final private ArrayList<Vertex> stationenArrayList;
-	final private ArrayList<Edge> kantenArrayList;
-	final private String fahrtartString;
+	public String idString;
+	public Vertex vonVertex;
+	public Vertex nachVertex;
+	public int abDate;
+	public int anDate;
+	public int intDauer;
+	public int intcumDauer;
 	
-	public Wege(String idString, ArrayList<Vertex> stationenArrayList, ArrayList<Edge> kantenArrayList, String fahrtartString) {
+	public Wege(String idString, 
+			Vertex vonVertex,
+			Vertex nachVertex,
+			int abDate,
+			int anDate,
+			int intDauer,
+			int intcumDauer) {
 		this.idString = idString;
-		this.stationenArrayList = stationenArrayList;
-		this.kantenArrayList =kantenArrayList;
-		this.fahrtartString = fahrtartString;
-		
-	}
-	
+		this.vonVertex = vonVertex;
+		this.nachVertex =nachVertex;
+		this.abDate =abDate;
+		this.anDate = anDate;
+		this.intDauer = intDauer;
+		this.intcumDauer = intcumDauer;
+		}
+
 	public String getIdString() {
 		return idString;
 	}
-	
-	public String getSuchfahrtString() {
-		return fahrtartString;
-	
-	}
-	
+		
 	public void ReisezeitStandorteEinsatzort(Vertex Standort) {
 		
 	}
