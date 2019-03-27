@@ -127,6 +127,30 @@ public class DijkstraAlgorithm {
         Collections.reverse(path);
         return path;
     }
+    /*
+     * This method returns the path from the source to the selected target and
+     * NULL if no path exists
+     */
+    public int getDuration(LinkedList<Vertex> pathLinkedList) {
+    	int intDauer=0;
+       // LinkedList<Vertex> path = new LinkedList<Vertex>();
+        Vertex step = pathLinkedList.getLast();
+        // check if a path exists
+        if (predecessors.get(step) == null) {
+            return intDauer;
+        }
+//        intDauer = intDauer+ path
+//        path.add(step);
+//        getShortestDistance(destination)
+        while (predecessors.get(step) != null) {
+        	intDauer = intDauer + getDistance(step, predecessors.get(step));
+            step = predecessors.get(step);
+//            path.add(step);
+        }
+        // Put it into the correct order
+//        Collections.reverse(path);
+        return intDauer;
+    }
 
 
 }
