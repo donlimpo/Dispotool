@@ -3,10 +3,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.hamcrest.core.DescribedAs;
 
 import algos.dijkstra.model.Edge;
 import algos.dijkstra.model.Graph;
@@ -134,21 +137,19 @@ public class DijkstraAlgorithm {
     public int getDuration(LinkedList<Vertex> pathLinkedList) {
     	int intDauer=0;
        // LinkedList<Vertex> path = new LinkedList<Vertex>();
-        Vertex step = pathLinkedList.getLast();
-        // check if a path exists
-        if (predecessors.get(step) == null) {
-            return intDauer;
-        }
-//        intDauer = intDauer+ path
-//        path.add(step);
-//        getShortestDistance(destination)
-        while (predecessors.get(step) != null) {
-        	intDauer = intDauer + getDistance(step, predecessors.get(step));
-            step = predecessors.get(step);
-//            path.add(step);
-        }
-        // Put it into the correct order
-//        Collections.reverse(path);
+    	Iterator<Vertex> it = pathLinkedList.iterator();
+    	
+    	//ersten Eintrag der Liste holen
+    	Vertex tempvonVertex = pathLinkedList.getFirst();
+    	while(it.hasNext()) {
+    		Vertex tempnachVertex = it.next();
+    		System.out.println(tempvonVertex + " " + tempnachVertex);
+    		if (tempvonVertex != tempnachVertex )
+    			{
+    				intDauer= intDauer + getDistance(tempvonVertex, tempnachVertex);
+    			}
+    		tempvonVertex =tempnachVertex;
+    	}
         return intDauer;
     }
 

@@ -45,39 +45,20 @@ public static ArrayList<Wege> PfadFindenStrings(String vonString, String nachStr
 	ArrayList<Wege> tempReiseWeg = new ArrayList<Wege>();
     // wir fahren mal von MH nach TS
     Vertex TempVonVertex = BhfFindenVertex(vonString);
- /*   		bhfVertex.stream()
-			   .filter(Bahnhof -> vonString.equals(Bahnhof.getId()))
-			   .findAny()
-			   .orElse(null);
-    System.out.println(TempVonVertex);
-   */ 
     Vertex TempNach  = BhfFindenVertex(nachString);
-    /*.stream()
-			   .filter(Bahnhof -> nachString.equals(Bahnhof.getId()))
-			   .findAny()
-			   .orElse(null);
-     */
      Graph graph = new Graph(bhfVertex, verbindungEdges);
 
      DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
      dijkstra.execute(TempVonVertex); // von hier geht es los
      LinkedList<Vertex> path =  dijkstra.getPath(TempNach);  // und hier steht der Zielknoten drin
-
 //       assertNotNull(path);
 //      assertTrue(path.size() > 0);
-
-/*     for (Vertex vertex : path) {
-         System.out.println(vertex);
-     }
-     
-     /*
-      * Jetzt als nächstes nochmal reingehen und die Dauer rausholen und zusätzlich angeben.
-      */
  /*    System.out.println(path);
 */     
       int k=0 ;
       int iRunSum =0;
      for (k=0; k< path.size()-1; k++) {
+    	 //könnte man eigentlich auch umstellen, da es sich bei path um eine linked list handelt.
      	Vertex tempAktuellVonVertex = path.get(k);
      	Vertex tempAktuellNachVertex = path.get(k+1);
      	 Edge TempKante = verbindungEdges.stream()
@@ -100,7 +81,8 @@ public static ArrayList<Wege> PfadFindenStrings(String vonString, String nachStr
      	
      	tempReiseWeg.add(tempWeg);
      }
- 	//System.out.println("Fahrtdauer aus DijkstraAlgorithm :"+ dijkstra.getDuration(dijkstra.getPath(TempNach)));
+ 	System.out.println("Fahrtdauer aus DijkstraAlgorithm :"+ dijkstra.getDuration(path));
+ 	System.out.println("das zeigt Johanna etwas");
  	 //die will nicht
 return tempReiseWeg;
 	
