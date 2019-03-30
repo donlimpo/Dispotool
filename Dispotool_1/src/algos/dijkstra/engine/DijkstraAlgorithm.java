@@ -143,7 +143,6 @@ public class DijkstraAlgorithm {
     	Vertex tempvonVertex = pathLinkedList.getFirst();
     	while(it.hasNext()) {
     		Vertex tempnachVertex = it.next();
-    		System.out.println(tempvonVertex + " " + tempnachVertex);
     		if (tempvonVertex != tempnachVertex )
     			{
     				intDauer= intDauer + getDistance(tempvonVertex, tempnachVertex);
