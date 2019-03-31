@@ -136,18 +136,20 @@ public class DijkstraAlgorithm {
      */
     public int getDuration(LinkedList<Vertex> pathLinkedList) {
     	int intDauer=0;
-       // LinkedList<Vertex> path = new LinkedList<Vertex>();
-    	Iterator<Vertex> it = pathLinkedList.iterator();
-    	
-    	//ersten Eintrag der Liste holen
-    	Vertex tempvonVertex = pathLinkedList.getFirst();
-    	while(it.hasNext()) {
-    		Vertex tempnachVertex = it.next();
-    		if (tempvonVertex != tempnachVertex )
-    			{
-    				intDauer= intDauer + getDistance(tempvonVertex, tempnachVertex);
-    			}
-    		tempvonVertex =tempnachVertex;
+    	if (pathLinkedList != null){ //fängt ab, falls nach einer nicht existenten Liste gefragt wird (Start = Ziel)
+	       // LinkedList<Vertex> path = new LinkedList<Vertex>();
+	    	Iterator<Vertex> it = pathLinkedList.iterator();
+	    	
+	    	//ersten Eintrag der Liste holen
+	    	Vertex tempvonVertex = pathLinkedList.getFirst();
+	    	while(it.hasNext()) {
+	    		Vertex tempnachVertex = it.next();
+	    		if (tempvonVertex != tempnachVertex )
+	    			{
+	    				intDauer= intDauer + getDistance(tempvonVertex, tempnachVertex);
+	    			}
+	    		tempvonVertex =tempnachVertex;
+	    	}
     	}
         return intDauer;
     }

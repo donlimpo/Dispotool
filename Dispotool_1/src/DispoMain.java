@@ -82,8 +82,6 @@ public static ArrayList<Wege> PfadFindenStrings(String vonString, String nachStr
      	tempReiseWeg.add(tempWeg);
      }
  	System.out.println("Fahrtdauer aus DijkstraAlgorithm :"+ dijkstra.getDuration(path));
- 	System.out.println("das zeigt Johanna etwas");
- 	 //die will nicht
 return tempReiseWeg;
 	
 }
@@ -101,11 +99,7 @@ public static int Fahrtdauer(List<Vertex> pfadList ) {
    			  .orElse(null);
    	intDauer = intDauer+ TempKante.getWeight();	        	
    	System.out.println("Runsum: "+intDauer);
-   }      
-
-
-	
-	
+   }   
 	return intDauer;
 }
 
@@ -244,13 +238,13 @@ public static void main(String[] args) {
        
        // wir fahren mal von MH nach TS
        Vertex TempVonVertex = BhfFindenVertex("MH");
-       Vertex TempNach  = BhfFindenVertex("TS");
+       Vertex TempNachVertex  = BhfFindenVertex("TS");
 
        Graph graph = new Graph(bhfVertex, verbindungEdges);
 
         DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
         dijkstra.execute(TempVonVertex); // von hier geht es los
-        LinkedList<Vertex> path = dijkstra.getPath(TempNach);  // und hier steht der Zielknoten drin
+        LinkedList<Vertex> path = dijkstra.getPath(TempNachVertex);  // und hier steht der Zielknoten drin
 
  //       assertNotNull(path);
   //      assertTrue(path.size() > 0);
@@ -268,18 +262,86 @@ public static void main(String[] args) {
         ReiserouteDrucken(path);
    //     System.out.println(Standorte.BereitschaftenFuellen(bhfVertex));  
         List<Vertex> StandortListe = Standorte.BereitschaftenFuellen(bhfVertex);
+ 
+/*
+ * Ansatz:
+ * 1) für jeden Standort die Zeit zum 1.Abfahrtsort berechnen
+ * 2) sortieren und den mit der kürzesten Anfahrt nehmen
+ * 3) der fährt dann so lange, bis er gerade noch zurückkomtt
+ * 4) mit der verbleibenden Strecke das gleiche nochmal
+ */
+        //Vorbereitung:
+        ArrayList<Fahrten> zugangArrayList = new ArrayList<Fahrten>();
+        //1) ALs Ü-Fahrt nehmen wir TempVonVertex => TempNachVertex
+        for(Vertex abgangVertex:StandortListe) {
+        	dijkstra = new DijkstraAlgorithm(graph);
+            dijkstra.execute(abgangVertex); // von hier geht es los
+            path = dijkstra.getPath(TempVonVertex);  // und hier steht der Zielknoten drin. Das Ergebnis ist eine Linked List des Weges
+            Fahrten tempFahrten = new Fahrten( abgangVertex.toString() +"=>"+ TempVonVertex.toString(),
+            		abgangVertex,
+            		TempVonVertex,
+            		dijkstra.getDuration(path));
+            zugangArrayList.add(tempFahrten);
+            System.out.println(tempFahrten.getID()+ tempFahrten.getFahrDauer());
+        }
         
-        //PfadFindenStrings("MH", "HH");
         
         ArrayList<Wege> Anfahrten = new ArrayList<Wege>();
         
-        for (Vertex Abgangsort : StandortListe ) {
+ /*       for (Vertex Abgangsort : StandortListe ) {
         	System.out.println(Abgangsort.getName());
-        	if(Abgangsort.getName() != "MH") {
+        	if(!Abgangsort.getName().toString().equals("KK")) {
+        		System.out.println("Wir suchen jetz:"+ Abgangsort.getName()+ " -> KK");
         		Anfahrten.addAll(PfadFindenStrings(Abgangsort.getName(), "KK"));
         	}
         	//System.out.println("Fahrtdauer aus DijkstraAlgorithm :"+ dijkstra.getDuration(BhfFindenVertex("KK")));
         }
+        // Für den Versuch ist die Überführungsfahrt von TS nach HH
+        
+        ArrayList<ArrayList<Integer>> anfahrtmatrixArrayList = new ArrayList<ArrayList<Integer>>(); 
+  */    
+        
+        //1) Liste der Knoten für die Ü-Fahrt erstellen
+         TempVonVertex = BhfFindenVertex("TS");
+         TempNachVertex  = BhfFindenVertex("HH");
+
+        // graph =new Graph(bhfVertex, verbindungEdges);
+
+         dijkstra = new DijkstraAlgorithm(graph);
+         dijkstra.execute(TempVonVertex); // von hier geht es los
+         path = dijkstra.getPath(TempNachVertex);  // und hier steht der Zielknoten drin. Das Ergebnis ist eine Linked List des Weges
+         
+         // Array dimensionieren
+         
+         int[][] AnfahrtsArrayint = new int[StandortListe.size()][path.size()];
+         int i =0;
+         int j =0;
+
+        for (Vertex heimatVertex : StandortListe ) {
+        	j =0;
+        
+        	for(Vertex zielortVertex : path) {
+        		System.out.println("Wir suchen jetz:"+ heimatVertex.getName()+" => "+ zielortVertex.getName());
+        		if(!heimatVertex.equals(zielortVertex)) {
+        			System.out.println("bin Hier");
+        	         Graph tempgraph = new Graph(bhfVertex, verbindungEdges);
+
+        	         DijkstraAlgorithm tempdijkstra = new DijkstraAlgorithm(tempgraph);
+        	         tempdijkstra.execute(heimatVertex); // von hier geht es los
+        	         LinkedList<Vertex> temppath = tempdijkstra.getPath(zielortVertex);  // und hier steht der Zielknoten drin. Das Ergebnis ist eine Linked List des Weges
+        	         System.out.println(temppath);
+        	         AnfahrtsArrayint[i][j] = tempdijkstra.getDuration(temppath);        		
+	        	} else {
+	        		AnfahrtsArrayint[i][j] =0;
+				}
+   	         System.out.println("Dauer von: "+ heimatVertex.getName()+" => "+ zielortVertex.getName()+" = "+ AnfahrtsArrayint[i][j]);
+
+	        		j++;
+	        }
+        	i++;
+        }
+        	
+        
 	}
 
 }
