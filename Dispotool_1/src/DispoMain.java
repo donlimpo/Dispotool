@@ -286,6 +286,18 @@ public static void main(String[] args) {
         }
         
         
+        //Sortierroutine nach Dauer implementieren. Quelle: https://stackoverflow.com/questions/18441846/how-to-sort-an-arraylist-in-java
+     // Sorting
+        Collections.sort(zugangArrayList, new Comparator<Fahrten>() {
+                @Override
+                public int compare(Fahrten zugangArrayList1, Fahrten zugangArrayList2)
+                {
+
+                    return  zugangArrayList1.dauerint.compareTo(zugangArrayList2.dauerint);
+                }
+                
+        zugangArrayList.
+        
         ArrayList<Wege> Anfahrten = new ArrayList<Wege>();
         
  /*       for (Vertex Abgangsort : StandortListe ) {
