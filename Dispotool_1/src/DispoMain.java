@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import algos.dijkstra.model.Vertex;
 import algos.dijkstra.engine.DijkstraAlgorithm;
@@ -244,7 +243,7 @@ public static void main(String[] args) {
 
         DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
         dijkstra.execute(TempVonVertex); // von hier geht es los
-        LinkedList<Vertex> path = dijkstra.getPath(TempNachVertex);  // und hier steht der Zielknoten drin
+        LinkedList<Vertex> Uepath = dijkstra.getPath(TempNachVertex);  // und hier steht der Zielknoten drin
 
  //       assertNotNull(path);
   //      assertTrue(path.size() > 0);
@@ -256,10 +255,10 @@ public static void main(String[] args) {
         /*
          * Jetzt als nächstes nochmal reingehen und die Dauer rausholen und zusätzlich angeben.
          */
-        System.out.println("Fahrtdauer: "+ Fahrtdauer(path));
-        System.out.println("Fahrtdauer aus DijkstraAlgorithm :"+ dijkstra.getDuration(path));
+        System.out.println("Fahrtdauer: "+ Fahrtdauer(Uepath));
+        System.out.println("Fahrtdauer aus DijkstraAlgorithm :"+ dijkstra.getDuration(Uepath));
  
-        ReiserouteDrucken(path);
+        ReiserouteDrucken(Uepath);
    //     System.out.println(Standorte.BereitschaftenFuellen(bhfVertex));  
         List<Vertex> StandortListe = Standorte.BereitschaftenFuellen(bhfVertex);
  
@@ -276,7 +275,7 @@ public static void main(String[] args) {
         for(Vertex abgangVertex:StandortListe) {
         	dijkstra = new DijkstraAlgorithm(graph);
             dijkstra.execute(abgangVertex); // von hier geht es los
-            path = dijkstra.getPath(TempVonVertex);  // und hier steht der Zielknoten drin. Das Ergebnis ist eine Linked List des Weges
+            LinkedList<Vertex> path = dijkstra.getPath(TempVonVertex);  // und hier steht der Zielknoten drin. Das Ergebnis ist eine Linked List des Weges
             Fahrten tempFahrten = new Fahrten( abgangVertex.toString() +"=>"+ TempVonVertex.toString(),
             		abgangVertex,
             		TempVonVertex,
@@ -284,20 +283,21 @@ public static void main(String[] args) {
             zugangArrayList.add(tempFahrten);
             System.out.println(tempFahrten.getID()+ tempFahrten.getFahrDauer());
         }
-        
-        
-        //Sortierroutine nach Dauer implementieren. Quelle: https://stackoverflow.com/questions/18441846/how-to-sort-an-arraylist-in-java
-     // Sorting
-        Collections.sort(zugangArrayList, new Comparator<Fahrten>() {
-                @Override
-                public int compare(Fahrten zugangArrayList1, Fahrten zugangArrayList2)
-                {
+     // Sorting nach Quelle: https://stackoverflow.com/questions/18441846/how-to-sort-an-arraylist-in-java
+     
+        //2) 
+     Collections.sort(zugangArrayList);
+     for(Fahrten tempFahrt : zugangArrayList) {
+    	 System.out.println(tempFahrt.idString + " Dauer: "+ tempFahrt.dauerint);
+     }
+     Vertex Startknoten = zugangArrayList.get(0).nachVertex;
+     
+     
+     
+     
+     System.out.println("Kannst abschalten");
 
-                    return  zugangArrayList1.dauerint.compareTo(zugangArrayList2.dauerint);
-                }
-                
-        zugangArrayList.
-        
+ 
         ArrayList<Wege> Anfahrten = new ArrayList<Wege>();
         
  /*       for (Vertex Abgangsort : StandortListe ) {
@@ -321,7 +321,7 @@ public static void main(String[] args) {
 
          dijkstra = new DijkstraAlgorithm(graph);
          dijkstra.execute(TempVonVertex); // von hier geht es los
-         path = dijkstra.getPath(TempNachVertex);  // und hier steht der Zielknoten drin. Das Ergebnis ist eine Linked List des Weges
+         LinkedList<Vertex> path = dijkstra.getPath(TempNachVertex);  // und hier steht der Zielknoten drin. Das Ergebnis ist eine Linked List des Weges
          
          // Array dimensionieren
          
