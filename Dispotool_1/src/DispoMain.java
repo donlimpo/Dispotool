@@ -237,7 +237,7 @@ public static void main(String[] args) {
        
        // wir fahren mal von MH nach TS
        Vertex TempVonVertex = BhfFindenVertex("MH");
-       Vertex TempNachVertex  = BhfFindenVertex("TS");
+       Vertex TempNachVertex  = BhfFindenVertex("AH");
 
        Graph graph = new Graph(bhfVertex, verbindungEdges);
 
@@ -269,6 +269,7 @@ public static void main(String[] args) {
  * 3) der fährt dann so lange, bis er gerade noch zurückkomtt
  * 4) mit der verbleibenden Strecke das gleiche nochmal
  */
+        int MinAnfahrt =0;
         //Vorbereitung:
         ArrayList<Fahrten> zugangArrayList = new ArrayList<Fahrten>();
         //1) ALs Ü-Fahrt nehmen wir TempVonVertex => TempNachVertex
@@ -291,8 +292,17 @@ public static void main(String[] args) {
     	 System.out.println(tempFahrt.idString + " Dauer: "+ tempFahrt.dauerint);
      }
      Vertex Startknoten = zugangArrayList.get(0).nachVertex;
+     MinAnfahrt =zugangArrayList.get(0).dauerint;
      
+     System.out.println("Das hier ist der Weg" +  Uepath);
      
+     /*
+      * 3) Rückfahrzeiten berechnen
+      */
+     int Einsatzdauer =0;
+     while(Einsatzdauer < 10000) {
+    	 Einsatzdauer = MinAnfahrt +1;
+     }
      
      
      System.out.println("Kannst abschalten");
