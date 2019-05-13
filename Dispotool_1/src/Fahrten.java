@@ -1,4 +1,5 @@
 import java.util.Comparator;
+import java.util.LinkedList;
 
 import algos.dijkstra.model.Vertex;
 
@@ -6,15 +7,18 @@ public class Fahrten implements Comparable<Fahrten> {
 	String idString;
 	Vertex vonVertex;
 	Vertex nachVertex;
+	//LinkedList<Vertex> Reisekette;
 	int dauerint;
 
 	public Fahrten(String idString,
 			Vertex vonVertex,
 			Vertex nachVertex,
+	//		LinkedList<Vertex> Reisekette,
 			int dauerint) {
 		this.idString = idString;
 		this.vonVertex = vonVertex;
 		this.nachVertex = nachVertex;
+	//	this.Reisekette = Reisekette;
 		this.dauerint = dauerint;
 	}
 	

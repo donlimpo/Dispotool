@@ -36,6 +36,7 @@ public static <T, K extends Comparable<K>> Collector<T, ?, TreeMap<K, List<T>>> 
      return Collectors.groupingBy(function, 
         TreeMap::new, Collectors.toList());
 }
+
 public static ArrayList<Wege> PfadFindenStrings(String vonString, String nachString) {
 	if (vonString.equals(nachString)) {
 		return null;
@@ -97,7 +98,7 @@ public static int Fahrtdauer(List<Vertex> pfadList ) {
    			 .findAny()
    			  .orElse(null);
    	intDauer = intDauer+ TempKante.getWeight();	        	
-   	System.out.println("Runsum: "+intDauer);
+   //	System.out.println("Runsum: "+intDauer);
    }   
 	return intDauer;
 }
@@ -130,6 +131,7 @@ public static Vertex BhfFindenVertex(String suchString) {
 			   .orElse(null);
 	return TempVertex;
 }
+
 public static void main(String[] args) {
 	// TODO Auto-generated method stub
 	System.out.println("Houston...");
@@ -244,6 +246,9 @@ public static void main(String[] args) {
         DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
         dijkstra.execute(TempVonVertex); // von hier geht es los
         LinkedList<Vertex> Uepath = dijkstra.getPath(TempNachVertex);  // und hier steht der Zielknoten drin
+        /*
+         * Wichtig zu wissen: Uepath ist der Weg, den die Ü-Fahrt nehmen soll. Die Var brauche ich säter auch immer wieder.
+         */
 
  //       assertNotNull(path);
   //      assertTrue(path.size() > 0);
@@ -261,7 +266,11 @@ public static void main(String[] args) {
         ReiserouteDrucken(Uepath);
    //     System.out.println(Standorte.BereitschaftenFuellen(bhfVertex));  
         List<Vertex> StandortListe = Standorte.BereitschaftenFuellen(bhfVertex);
+   //     System.out.println(StandortListe);
  
+        
+        
+        
 /*
  * Ansatz:
  * 1) für jeden Standort die Zeit zum 1.Abfahrtsort berechnen
@@ -269,10 +278,10 @@ public static void main(String[] args) {
  * 3) der fährt dann so lange, bis er gerade noch zurückkomtt
  * 4) mit der verbleibenden Strecke das gleiche nochmal
  */
-        int MinAnfahrt =0;
         //Vorbereitung:
-        ArrayList<Fahrten> zugangArrayList = new ArrayList<Fahrten>();
+    //    ArrayList<Fahrten> zugangArrayList = new ArrayList<Fahrten>();
         //1) ALs Ü-Fahrt nehmen wir TempVonVertex => TempNachVertex
+     /*   
         for(Vertex abgangVertex:StandortListe) {
         	dijkstra = new DijkstraAlgorithm(graph);
             dijkstra.execute(abgangVertex); // von hier geht es los
@@ -280,35 +289,181 @@ public static void main(String[] args) {
             Fahrten tempFahrten = new Fahrten( abgangVertex.toString() +"=>"+ TempVonVertex.toString(),
             		abgangVertex,
             		TempVonVertex,
+            		//path,
             		dijkstra.getDuration(path));
             zugangArrayList.add(tempFahrten);
-            System.out.println(tempFahrten.getID()+ tempFahrten.getFahrDauer());
+           // System.out.println(tempFahrten.getID()+ tempFahrten.getFahrDauer());
         }
      // Sorting nach Quelle: https://stackoverflow.com/questions/18441846/how-to-sort-an-arraylist-in-java
      
         //2) 
      Collections.sort(zugangArrayList);
      for(Fahrten tempFahrt : zugangArrayList) {
-    	 System.out.println(tempFahrt.idString + " Dauer: "+ tempFahrt.dauerint);
+    	 System.out.println(tempFahrt.idString + " Anreisedauer: "+ tempFahrt.dauerint);
      }
-     Vertex Startknoten = zugangArrayList.get(0).nachVertex;
-     MinAnfahrt =zugangArrayList.get(0).dauerint;
+    // Vertex Startknoten = zugangArrayList.get(0).nachVertex;  // Das ist der Knoten aus dem der nächste Tf kommt
      
-     System.out.println("Das hier ist der Weg" +  Uepath);
+    // System.out.println("Das hier ist der Weg" +  Uepath);
      
      /*
       * 3) Rückfahrzeiten berechnen
-      */
-     int Einsatzdauer =0;
-     while(Einsatzdauer < 10000) {
-    	 Einsatzdauer = MinAnfahrt +1;
-     }
+      * Dazu nehmen wir die Klasse Einsatzplan mit in Beschlag
+      *
+      * hier kommentar beenden und es sollte wieder laufen
+      *
+      *
+     Einsatzplan tempEinsatzplan  =new Einsatzplan();
+     int iCounter =1;
+     tempEinsatzplan.intSchichtdauer =30000;
+     tempEinsatzplan.VertexHeimatstandort =Startknoten;
      
+     System.out.println("Fahrtdauer Heimatort zu Einsatzort:" + Fahrtdauer(Uepath.subList(0, iCounter)));
      
-     System.out.println("Kannst abschalten");
+     tempEinsatzplan.FahrtenAnfahrt = zugangArrayList.get(0);
+     tempEinsatzplan.intDauerAnfahrt = Fahrtdauer(Uepath.subList(0, iCounter));
+     
+     while((tempEinsatzplan.intDauerAnfahrt+ tempEinsatzplan.intDauerLastfahrt) < 10000) {
+    	 iCounter ++;
+    	 System.out.println("Geschaffte Stationen: "+ iCounter + " "+ Uepath.subList(0, iCounter));
 
- 
-        ArrayList<Wege> Anfahrten = new ArrayList<Wege>();
+    	 tempEinsatzplan.intDauerLastfahrt = Fahrtdauer(Uepath.subList(0, iCounter));
+        
+    	 System.out.println("Fahrtdauer in Lastfahrt:" +  tempEinsatzplan.intDauerLastfahrt);
+    	 
+    	//Rückfahrdauer berechnen
+          DijkstraAlgorithm dijkstraRueckfahrt = new DijkstraAlgorithm(graph);
+          dijkstraRueckfahrt.execute(Uepath.get(iCounter-1)); // von hier geht es los (Vorherige Station!!!)
+         LinkedList<Vertex> LinkedListVertexRuckfahrt = dijkstraRueckfahrt.getPath(tempEinsatzplan.VertexHeimatstandort); // und hier steht der Zielknoten drin
+         
+         int inttempRueckfahrdauer = dijkstraRueckfahrt.getDuration(LinkedListVertexRuckfahrt); 
+         System.out.println("Fahrtdauer Rückfahrt:" + inttempRueckfahrdauer);
+         
+         if(tempEinsatzplan.intDauerAnfahrt + inttempRueckfahrdauer + tempEinsatzplan.intDauerAbfahrt< tempEinsatzplan.intSchichtdauer) {
+        	 tempEinsatzplan.intDauerLastfahrt = inttempRueckfahrdauer;
+         }
+     }
+     Fahrten tempLastFahrten = new Fahrten( Uepath.get(0).toString() +"=>"+ Uepath.get(iCounter-1).toString(),
+    		 Uepath.get(0),
+    		 Uepath.get(iCounter-1),
+     		 tempEinsatzplan.intDauerLastfahrt); //     
+     
+     /* 
+      * Ab hier muß der nächste Tf aus einem anderen Standort übernehmen.
+      * also wieder die kürzeste Anfahrt finden und das gleiche Spiel nochmal, bis wir am Zielort sind.
+      * Das machen wir jetzt aber gleich richtig als komplexe Schleife.
+      * 
+      * Der Kram vorher bleibt da, damit ich daraus fleddern / darauf zurückgehen kann
+      */
+    
+     
+     
+     /*
+      *+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+      */
+     System.out.println("Hier beginnt der ganz neue Ansatz");
+     /*
+      * Abbruchkriterium wird sein: wir sind an unserem Zielstandort Uepath.getLast() des Uepfad angekommen.
+      * 
+      */
+     
+     
+     
+     int iCounter =0; //Das ist der Zähler, der zeigt an welcher Station ich mit der Ü-Fahrt gerade bin
+     int intLetzteVorleistung =0;
+     
+     // war vorher ausßerhalb:
+     //ArrayList<Fahrten> zugangArrayList = new ArrayList<Fahrten>();
+     
+     while(iCounter < Uepath.size()) {  //solange wir noch nicht alle Stationen von Uepath abgeklappert haben
+    	 
+    	 //finde den nächsten Standort und organisiere eine Anreise
+
+    	 ArrayList<Fahrten> tempzugangArrayList = new ArrayList<Fahrten>();
+         
+         for(Vertex abgangVertex:StandortListe) {
+         	dijkstra = new DijkstraAlgorithm(graph);
+             dijkstra.execute(abgangVertex); // von hier geht es los
+             //Was, wenn An und Ab gleich sind?
+             LinkedList<Vertex> path = dijkstra.getPath(Uepath.get(iCounter));  // und hier steht der Zielknoten drin. Das Ergebnis ist eine Linked List des Weges
+             Fahrten tempFahrten = new Fahrten( abgangVertex.toString() +"=>"+ Uepath.get(iCounter).toString(),//TempVonVertex.toString(),  //TempVonVertex austauschen
+             		abgangVertex,
+             		Uepath.get(iCounter),
+             		//TempVonVertex,
+             		//path,
+             		dijkstra.getDuration(path));
+             tempzugangArrayList.add(tempFahrten); 
+        }
+      Collections.sort(tempzugangArrayList); //Sortiert die tempzugangArrayList
+      System.out.println(tempzugangArrayList.get(0).idString);  //hier ist der Fehler
+      Vertex Startknoten = tempzugangArrayList.get(0).nachVertex;  // Das ist der Knoten aus dem der nächste Tf kommt
+      //System.out.println(tempzugangArrayList.get(0));
+      
+      Einsatzplan tempAktEinsatzplan  =new Einsatzplan();
+      tempAktEinsatzplan.VertexHeimatstandort = tempzugangArrayList.get(0).vonVertex; // war Startknoten;
+      System.out.println("Von hier aus wird angereist:"+    tempAktEinsatzplan.VertexHeimatstandort.toString());
+      
+      //System.out.println("Fahrtdauer Heimatort zu Einsatzort: " + Fahrtdauer(Uepath.subList(intLetzteVorleistung, iCounter)));
+      System.out.println("Fahrtdauer Heimatort zu Einsatzort: " + tempzugangArrayList.get(0).dauerint);
+      System.out.println("Von: "+Uepath.get(intLetzteVorleistung)+ "Nach: "+Uepath.get(iCounter));
+      
+      //ArrayList<Fahrten> zugangArrayList = new ArrayList<Fahrten>();
+      
+      tempAktEinsatzplan.FahrtenAnfahrt = tempzugangArrayList.get(0);  // temp hinzugefügt
+      tempAktEinsatzplan.intDauerAnfahrt = tempzugangArrayList.get(0).dauerint; //Fahrtdauer(Uepath.subList(intLetzteVorleistung, iCounter));
+      tempAktEinsatzplan.intDauerAbfahrt =0;
+      
+      while(((tempAktEinsatzplan.intDauerAnfahrt + 
+    		  tempAktEinsatzplan.intDauerLastfahrt + 
+    		  tempAktEinsatzplan.intDauerAbfahrt) < 10000) & 
+    		  (iCounter < Uepath.size())) {
+     	 iCounter ++;
+     	 System.out.println("Geschaffte Stationen: "+ iCounter + " "+ Uepath.subList(intLetzteVorleistung, iCounter));
+
+     	tempAktEinsatzplan.intDauerLastfahrt = Fahrtdauer(Uepath.subList(intLetzteVorleistung, iCounter));
+         
+     	 System.out.println("Fahrtdauer in Lastfahrt:" +  tempAktEinsatzplan.intDauerLastfahrt);
+     	 
+     	//Rückfahrdauer berechnen
+           DijkstraAlgorithm dijkstraRueckfahrt = new DijkstraAlgorithm(graph);
+           dijkstraRueckfahrt.execute(Uepath.get(iCounter-1)); // von hier geht es los (vorherige Station)
+          LinkedList<Vertex> LinkedListVertexRuckfahrt = dijkstraRueckfahrt.getPath(tempAktEinsatzplan.VertexHeimatstandort); // und hier steht der Zielknoten drin
+          
+          int inttempRueckfahrdauer = dijkstraRueckfahrt.getDuration(LinkedListVertexRuckfahrt); 
+          System.out.println("Fahrtdauer Rückfahrt:" + inttempRueckfahrdauer);
+          
+          if(tempAktEinsatzplan.intDauerAnfahrt + inttempRueckfahrdauer + tempAktEinsatzplan.intDauerAbfahrt< tempAktEinsatzplan.intSchichtdauer) {
+         	 tempAktEinsatzplan.intDauerLastfahrt = Fahrtdauer(Uepath.subList(intLetzteVorleistung, iCounter)); //inttempRueckfahrdauer;
+         	tempAktEinsatzplan.intDauerAbfahrt = inttempRueckfahrdauer;
+          }
+      }
+      intLetzteVorleistung =iCounter-1;
+      System.out.println("Wir wechseln nach " + iCounter+ " Stationen den Tf!!!");
+  
+      
+      /*
+       * Aktuelle Fehlerliste:
+       * 
+       * Offen: 
+       * Wenn ich erfolgreich angekommen bin bricht er nicht ab, sondern geht nochmal in die Scheife und stürzt dannin Zeile 417 ab,
+       * weil iCounter offensichtlich 1 zu hoch ist.
+       *
+       * 
+       * Behoben: 
+       * 1 Heimatstandorte werden nicht richtig gezogen. er geht immer auf den aktuellen Endbahnhof
+       * 2 Die Dauer der Rückfahrt wird nicht wieder zurück auf 0 gesetzt, sondern immer weiter hochgezählt
+       * 3 Fahrtdauer Heimatort zu Einsatzort wird wohl nicht richtig berechnet
+       */
+      
+      /*
+       * Hier müssen wir jetzt die Fahrt befüllen und dann die nächste neu initialisieren.
+       */
+      
+
+    	 
+     }    
+     System.out.println("Kannst abschalten, wir sind angekommen :-)");
+     
+   //  ArrayList<Wege> Anfahrten = new ArrayList<Wege>();
         
  /*       for (Vertex Abgangsort : StandortListe ) {
         	System.out.println(Abgangsort.getName());
@@ -323,6 +478,8 @@ public static void main(String[] args) {
         ArrayList<ArrayList<Integer>> anfahrtmatrixArrayList = new ArrayList<ArrayList<Integer>>(); 
   */    
         
+     
+     /*
         //1) Liste der Knoten für die Ü-Fahrt erstellen
          TempVonVertex = BhfFindenVertex("TS");
          TempNachVertex  = BhfFindenVertex("HH");
@@ -362,6 +519,7 @@ public static void main(String[] args) {
 	        }
         	i++;
         }
+        */
         	
         
 	}
